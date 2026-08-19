@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yoshlik Yu Distribution — каталог продукции</title>
+<meta name="description" content="Официальный каталог витаминов и БАД компании Yoshlik Yu Distribution для фармацевтов и сотрудников аптек.">
+<meta name="theme-color" content="#1C1916">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.2.0/tabler-icons.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="prog"></div>
+<a class="sr" href="#main">Перейти к содержимому</a>
+
+<header class="top" id="top">
+  <div class="shell top-in">
+    <a class="mark" href="#/" id="nav-home" aria-label="На главную">
+      <span class="mark-badge">YU</span><span>Yoshlik Yu Distribution</span>
+    </a>
+    <span class="top-right">
+      <a class="top-link" href="#/catalog" id="nav-cat"><i class="ti ti-layout-grid" aria-hidden="true"></i> <span>Каталог</span></a>
+      <span class="lang" id="lang">
+        <button data-l="ru" aria-pressed="true">RU</button>
+        <button data-l="uz" aria-pressed="false">UZ</button>
+      </span>
+    </span>
+  </div>
+</header>
+
+<div class="pbar" id="pbar"><div class="shell pbar-in">
+  <b id="pbar-name"></b>
+  <span class="pb-act">
+    <button class="icon-btn" id="pbar-qr" aria-label="QR-код"><i class="ti ti-qrcode" aria-hidden="true"></i></button>
+    <button class="icon-btn" id="pbar-share" aria-label="Поделиться"><i class="ti ti-share" aria-hidden="true"></i></button>
+  </span>
+</div></div>
+
+<main id="main"></main>
+
+<footer class="foot">
+  <div class="shell">
+    <div class="foot-in">
+      <div>
+        <h4>Yoshlik Yu Distribution</h4>
+        <p class="lead" id="f-about"></p>
+      </div>
+      <div>
+        <h4 id="f-cat-h"></h4>
+        <a href="#/catalog" id="f-all"></a>
+        <a href="#/catalog?cat=Витамин D" id="f-c1"></a>
+        <a href="#/catalog?cat=Омега-3" id="f-c2"></a>
+        <a href="#/catalog?cat=Детские витамины" id="f-c3"></a>
+      </div>
+      <div>
+        <h4 id="f-con-h"></h4>
+        <a href="tel:" id="f-phone"></a>
+        <a href="#/qr" id="f-qr"></a>
+      </div>
+    </div>
+    <div class="disc">
+      <span id="f-disc"></span>
+      <span id="f-src" style="opacity:.75"></span>
+      <span>© Yoshlik Yu Distribution</span>
+    </div>
+  </div>
+</footer>
+
+<button id="totop" aria-label="Наверх"><i class="ti ti-arrow-up" aria-hidden="true"></i></button>
+
+<div class="ovl" id="ovl" role="dialog" aria-modal="true" aria-label="QR-код товара">
+  <div class="qr-card">
+    <div class="qr-box" id="qrbox"></div>
+    <h3 id="qrname"></h3>
+    <p class="url" id="qrurl"></p>
+    <div class="qr-actions">
+      <button id="qrcopy"><i class="ti ti-link" aria-hidden="true"></i> Копировать</button>
+      <button id="qrclose"><i class="ti ti-x" aria-hidden="true"></i> Закрыть</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script> -->
+<script src="qr-generator.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="script.js">
+</script>
+</body>
+</html>
