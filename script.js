@@ -326,17 +326,6 @@ function viewHome(){
     + '<h2>'+esc(t('sec_parts_h'))+'</h2><p>'+esc(t('sec_parts_p'))+'</p></div>'
     + '<div class="cat-grid">'+tiles+'</div></div></section>'
 
-    + '<section><div class="shell sec" style="padding-bottom:0">'
-    + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_how'))+'</span>'
-    + '<h2>'+esc(t('sec_how_h'))+'</h2></div><div class="steps">'
-    + '<div class="step rv"><span class="num">1</span><i class="ti ti-users" aria-hidden="true"></i>'
-    + '<h3>'+esc(t('s1h'))+'</h3><p>'+esc(t('s1p'))+'</p></div>'
-    + '<div class="step rv"><span class="num">2</span><i class="ti ti-qrcode" aria-hidden="true"></i>'
-    + '<h3>'+esc(t('s2h'))+'</h3><p>'+esc(t('s2p'))+'</p></div>'
-    + '<div class="step rv"><span class="num">3</span><i class="ti ti-notes" aria-hidden="true"></i>'
-    + '<h3>'+esc(t('s3h'))+'</h3><p>'+esc(t('s3p'))+'</p></div>'
-    + '</div></div></section>'
-
     + '<div class="ribbon" aria-hidden="true"><div class="rt">'+ribbon+'</div></div>'
 
     + '<section><div class="shell sec" style="padding-top:0">'
@@ -564,7 +553,7 @@ function viewProduct(slug){
       + '<p style="margin-top:20px"><a class="btn-outline" href="'+L('#/catalog')+'">'+esc(t('open_cat'))+'</a></p></div></div>';
     return;
   }
-  document.title=F(p,'name')+' — Yoshlik Yu Distribution';
+  document.title=F(p,'name');
   document.getElementById('pbar-name').textContent=F(p,'name');
   var h=hue(p.category);
 
@@ -865,7 +854,7 @@ function route(){
   current=null; pbar.classList.remove('show');
   window._slash=null; window._parallax=null;
   paintChrome();
-  document.title='Yoshlik Yu Distribution — '+(LANG==='uz'?'mahsulot katalogi':'каталог продукции');
+  document.title=(LANG==='uz'?'mahsulot katalogi':'каталог продукции');
   topbar.classList.remove('stuck');
   if(path.indexOf('/p/')===0) viewProduct(decodeURIComponent(path.slice(3)));
   else if(path==='/catalog') viewCatalog(params);
