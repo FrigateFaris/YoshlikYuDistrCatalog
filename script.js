@@ -312,8 +312,8 @@ function viewHome(){
     + '<div class="hsearch"><div class="hs-row">'
     + '<div class="hs-field"><i class="ti ti-search" aria-hidden="true"></i>'
     + '<input id="hq" type="search" placeholder="'+esc(t('hs_ph'))+'" autocomplete="off" aria-label="'+esc(t('search_aria'))+'">'
-    + '<button class="hs-go" id="hgo"><span>'+esc(t('hs_find'))+'</span><i class="ti ti-arrow-right" aria-hidden="true"></i></button></div>'
-    + '<a class="hs-cat" href="'+L('#/catalog')+'"><i class="ti ti-layout-grid" aria-hidden="true"></i><span>'+esc(t('hs_cat'))+'</span></a>'
+    + '<button class="hs-go" id="hgo"><span>'+esc(t('hs_find'))+'</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>'
+    + '<a class="hs-cat" href="'+L('#/catalog')+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span>'+esc(t('hs_cat'))+'</span></a>'
     + '</div><div class="hs-drop" id="hdrop"></div>'
     + '<div class="hs-hint"><span>'+esc(t('hs_often'))+'</span>'+tips+'</div>'
     + '</div></div></div></section>'
@@ -427,8 +427,8 @@ function viewCatalog(params){
     + '<option value="name">'+esc(t('sort_name'))+'</option>'
     + '<option value="brand">'+esc(t('sort_brand'))+'</option>'
     + '<option value="pack">'+esc(t('sort_pack'))+'</option></select>'
-    + '<span class="vtog"><button id="vgrid" aria-pressed="true" aria-label="'+esc(t('v_grid'))+'"><i class="ti ti-layout-grid" aria-hidden="true"></i></button>'
-    + '<button id="vlist" aria-pressed="false" aria-label="'+esc(t('v_list'))+'"><i class="ti ti-list" aria-hidden="true"></i></button></span>'
+    + '<span class="vtog"><button id="vgrid" aria-pressed="true" aria-label="'+esc(t('v_grid'))+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></button>'
+    + '<button id="vlist" aria-pressed="false" aria-label="'+esc(t('v_list'))+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg></button></span>'
     + '</span></div><div id="out"></div><div class="more-wrap" id="morewrap"></div></div>';
 
   var input=document.getElementById('q'), clear=document.getElementById('clearq'), kbd=document.getElementById('kbd');
@@ -577,9 +577,9 @@ function viewProduct(slug){
     + '<div class="shell"><div class="back-bar">'
     + '<a class="back" href="'+L('#/catalog?cat='+encodeURIComponent(p.category))+'"><i class="ti ti-arrow-left" aria-hidden="true"></i> '+esc(catLabel(p.category))+'</a>'
     + '<div class="acts">'
-    + '<button class="icon-btn" id="printbtn" aria-label="'+esc(t('print_card'))+'"><i class="ti ti-printer" aria-hidden="true"></i></button>'
+    + '<button class="icon-btn" id="printbtn" aria-label="'+esc(t('print_card'))+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>'
     + '<button class="icon-btn wide" id="qrbtn"><i class="ti ti-qrcode" aria-hidden="true"></i> '+esc(t('qr_btn'))+'</button>'
-    + '<button class="icon-btn" id="sharebtn" aria-label="'+esc(t('share'))+'"><i class="ti ti-share" aria-hidden="true"></i></button>'
+    + '<button class="icon-btn" id="sharebtn" aria-label="'+esc(t('share'))+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>'
     + '</div></div>'
     + '<div class="p-top">'
     + '<div class="p-shot" style="background-color:var(--cream);background-image:'+mix(h,.24)+'">'+art

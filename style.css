@@ -391,3 +391,5 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
   font-style:normal!important;
   line-height:1!important;
 }
+
+.hs-go svg,.hs-cat svg,.vtog svg,.icon-btn svg{display:inline-block;flex-shrink:0}
