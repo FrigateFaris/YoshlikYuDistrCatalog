@@ -38,7 +38,7 @@ ru:{
  s1h:'Разговор в аптеке', s1p:'Медицинский представитель рассказывает фармацевту о продукте.',
  s2h:'Один QR-код', s2p:'Фармацевт наводит камеру и получает страницу товара себе в телефон.',
  s3h:'Справочник под рукой', s3p:'Состав и дозировка остаются доступными в тот момент, когда нужны.',
- sec_port:'Портфель', sec_brands:'Бренды', sec_brands_p:'Продукция производителей из США',
+ sec_port:'Портфель', sec_brands:'Бренды',
  cta_h:'Готовы посмотреть ассортимент?',
  cta_p:'Полный каталог с поиском по названию, бренду и действующему веществу.',
  cta_btn:'Открыть каталог',
@@ -244,8 +244,10 @@ function cardHTML(p,tm){
 }
 function rowHTML(p,tm){
   var h=hue(p.category);
+  var art=p.image?'<img src="'+esc(p.image)+'" alt="" loading="lazy">'
+    :'<i class="ti '+icon(p.category)+'" aria-hidden="true"></i>';
   return '<a class="lrow rv" href="'+L('#/p/'+esc(p.slug))+'">'
-    + '<span class="li" style="background:'+rgba(h,.13)+';color:'+h+'"><i class="ti '+icon(p.category)+'" aria-hidden="true"></i></span>'
+    + '<span class="li" style="background:'+rgba(h,.13)+';color:'+h+'">'+art+'</span>'
     + '<span class="ln2"><b>'+hl(F(p,'name'),tm)+'</b><span>'+esc(catLabel(p.category))+'</span></span>'
     + '<span class="lb">'+hl(p.brand,tm)+'</span>'
     + '<span class="ld">'+esc(doseStr(p)||'—')+'</span>'
@@ -283,8 +285,10 @@ function viewHome(){
   function mini(slug){
     var p=bySlug(slug); if(!p) return '';
     var h=hue(p.category);
+    var art=p.image?'<img src="'+esc(p.image)+'" alt="'+esc(F(p,'name'))+'" loading="lazy">'
+      :'<i class="ti '+icon(p.category)+'" aria-hidden="true"></i>';
     return '<a class="mini" href="'+L('#/p/'+esc(p.slug))+'" style="--h:'+h+'">'
-      + '<span class="mi" style="background:'+rgba(h,.13)+';color:'+h+'"><i class="ti '+icon(p.category)+'" aria-hidden="true"></i></span>'
+      + '<span class="mi" style="background:'+rgba(h,.13)+';color:'+h+'">'+art+'</span>'
       + '<span><b>'+esc(F(p,'name'))+'</b><span>'+esc(p.brand)+'</span></span></a>';
   }
   var a=SHELF_A.map(mini).join(''), b=SHELF_B.map(mini).join('');
@@ -400,6 +404,7 @@ function heroSearch(){
 
 /* ---------------- catalog ---------------- */
 var state={q:'',cat:'',shown:PAGE,sort:'default',view:'grid'};
+var lastCatalogState=null;
 
 function viewCatalog(params){
   topbar.classList.remove('on-dark');
@@ -412,7 +417,8 @@ function viewCatalog(params){
     })).join('');
 
   main.innerHTML =
-    '<div class="shell cat-head"><h1>'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
+    '<div class="catalog-page">'
+    + '<div class="shell cat-head"><h1>'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
     + '<div class="filters"><div class="shell">'
     + '<div class="search-wrap"><i class="ti ti-search" aria-hidden="true"></i>'
     + '<input id="q" type="search" placeholder="'+esc(t('q_ph'))+'" value="'+esc(state.q)+'" aria-label="'+esc(t('search_aria'))+'">'
@@ -428,8 +434,9 @@ function viewCatalog(params){
     + '<option value="pack">'+esc(t('sort_pack'))+'</option></select>'
     + '<span class="vtog"><button id="vgrid" aria-pressed="true" aria-label="'+esc(t('v_grid'))+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></button>'
     + '<button id="vlist" aria-pressed="false" aria-label="'+esc(t('v_list'))+'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg></button></span>'
-    + '</span></div><div id="out"></div><div class="more-wrap" id="morewrap"></div></div>';
-
+    + '</span></div><div id="out"></div><div class="more-wrap" id="morewrap"></div></div>'
+    + '</div>';
+    
   var input=document.getElementById('q'), clear=document.getElementById('clearq'), kbd=document.getElementById('kbd');
   function toggleClear(){
     var on=!!input.value;
@@ -574,8 +581,7 @@ function viewProduct(slug){
   main.innerHTML =
     '<section class="p-hero"><span class="wash" style="background-image:linear-gradient(178deg,'+rgba(h,.16)+',rgba(255,255,255,0))"></span>'
     + '<div class="shell"><div class="back-bar">'
-    + '<a class="back" href="'+L('#/catalog?cat='+encodeURIComponent(p.category))+'"><i class="ti ti-arrow-left" aria-hidden="true"></i> '+esc(catLabel(p.category))+'</a>'
-    + '<div class="acts">'
+    + '<a class="back" href="'+(lastCatalogState?lastCatalogState.hash:L('#/catalog?cat='+encodeURIComponent(p.category)))+'"><i class="ti ti-arrow-left" aria-hidden="true"></i> '+esc(catLabel(p.category))+'</a>'    + '<div class="acts">'
     + '<button class="icon-btn" id="printbtn" aria-label="'+esc(t('print_card'))+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>'
     + '<button class="icon-btn wide" id="qrbtn"><i class="ti ti-qrcode" aria-hidden="true"></i> '+esc(t('qr_btn'))+'</button>'
     + '<button class="icon-btn" id="sharebtn" aria-label="'+esc(t('share'))+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>'
@@ -859,9 +865,22 @@ function route(){
   else if(path==='/catalog') viewCatalog(params);
   else if(path==='/qr') viewSheet();
   else viewHome();
-  window.scrollTo(0,0);
+  if(path==='/catalog' && lastCatalogState && lastCatalogState.hash===location.hash){
+    window.scrollTo(0, lastCatalogState.scrollY);
+  } else {
+    window.scrollTo(0,0);
+  }
 }
-window.addEventListener('hashchange',function(){ if(READY) route(); });
+window.addEventListener('hashchange',function(e){
+  if(!READY) return;
+  try{
+    var oldHash=new URL(e.oldURL).hash;
+    if(oldHash.indexOf('#/catalog')===0){
+      lastCatalogState={hash:oldHash, scrollY:window.scrollY};
+    }
+  }catch(err){}
+  route();
+});
 paintChrome();
 showLoader();
 loadData();
