@@ -209,8 +209,8 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--h,var(--terra));transform:scaleX(0);transform-origin:left;transition:transform .35s var(--e)}
 .card:hover{transform:translateY(-5px);border-color:transparent;box-shadow:0 20px 40px -24px rgba(60,40,25,.5)}
 .card:hover::after{transform:scaleX(1)}
-.thumb{aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden}
-.thumb img{width:100%;height:100%;object-fit:contain;padding:14px;transition:transform .45s var(--e)}
+.thumb{aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden;background:var(--paper)}
+.thumb img{width:100%;height:100%;object-fit:cover;transition:transform .45s var(--e)}
 .card:hover .thumb img{transform:scale(1.06)}
 .thumb .ghost{font-size:74px;transition:transform .45s var(--e)}
 .card:hover .thumb .ghost{transform:scale(1.1) rotate(-5deg)}
