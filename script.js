@@ -502,7 +502,7 @@ function filtered(){
   else if(state.sort==='pack') list=list.slice().sort(function(a,b){ return (b.count||0)-(a.count||0); });
   return list;
 }
-function renderList(){
+function renderList(appendOnly){
   var list=filtered(), out=document.getElementById('out'),
       cline=document.getElementById('cline'), more=document.getElementById('morewrap');
   var tm=terms();
@@ -514,14 +514,25 @@ function renderList(){
   }
   cline.textContent=nProducts(list.length);
   var page=list.slice(0,state.shown);
-  out.innerHTML = state.view==='grid'
-    ? '<div class="grid">'+page.map(function(p){ return cardHTML(p,tm); }).join('')+'</div>'
-    : '<div class="list">'+page.map(function(p){ return rowHTML(p,tm); }).join('')+'</div>';
+  var wrap=out.querySelector(state.view==='grid'?'.grid':'.list');
+
+  if(appendOnly && wrap){
+    var prevShown=state.shown-PAGE;
+    var extra=list.slice(prevShown,state.shown);
+    wrap.insertAdjacentHTML('beforeend', extra.map(function(p){
+      return state.view==='grid' ? cardHTML(p,tm) : rowHTML(p,tm);
+    }).join(''));
+  } else {
+    out.innerHTML = state.view==='grid'
+      ? '<div class="grid">'+page.map(function(p){ return cardHTML(p,tm); }).join('')+'</div>'
+      : '<div class="list">'+page.map(function(p){ return rowHTML(p,tm); }).join('')+'</div>';
+  }
+
   more.innerHTML = list.length>state.shown
     ? '<button class="btn-outline" id="more">'+esc(t('show_more'))+' <i class="ti ti-chevron-down" aria-hidden="true"></i></button>' : '';
   if(list.length>state.shown){
     document.getElementById('more').addEventListener('click',function(){
-      state.shown+=PAGE; renderList();
+      state.shown+=PAGE; renderList(true);
     });
   }
   observe();
