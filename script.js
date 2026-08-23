@@ -426,7 +426,7 @@ function viewCatalog(params){
     + '<svg class="deco-ic i4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><path d="M12 2 22 12 12 22 2 12 Z"/></svg>'
     + '<svg class="deco-rings" viewBox="0 0 600 600"><circle cx="300" cy="300" r="180"/><circle cx="300" cy="300" r="240"/><circle cx="300" cy="300" r="300"/></svg>'
     + '</div>'
-    // + '<div class="shell cat-head">'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
+    + '<div class="shell cat-head">'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
     + '<div class="filters"><div class="shell">'
     + '<div class="search-wrap"><i class="ti ti-search" aria-hidden="true"></i>'
     + '<input id="q" type="search" placeholder="'+esc(t('q_ph'))+'" value="'+esc(state.q)+'" aria-label="'+esc(t('search_aria'))+'">'
