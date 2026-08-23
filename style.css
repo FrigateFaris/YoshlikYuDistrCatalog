@@ -398,15 +398,11 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 }
 
 .catalog-page{
-  position:relative;
-  background:linear-gradient(155deg,var(--cream) 0%,var(--paper) 45%,var(--paper) 55%,var(--cream) 100%);
-  background-attachment:scroll;
-}
-.catalog-page::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(rgba(194,84,31,.09) 1px,transparent 1px);
-  background-size:22px 22px;
-  opacity:.5;
+  background:
+    radial-gradient(1100px 560px at 12% -8%, var(--terra-tint) 0%, transparent 58%),
+    radial-gradient(900px 480px at 108% 6%, rgba(194,84,31,.07) 0%, transparent 55%),
+    var(--paper);
+  min-height:100vh;
 }
 .cat-deco{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .cat-head,.filters,.shell>.toolbar,#out,.more-wrap{position:relative;z-index:1}
