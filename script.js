@@ -418,7 +418,15 @@ function viewCatalog(params){
 
   main.innerHTML =
     '<div class="catalog-page">'
-    + '<div class="shell cat-head"><h1>'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
+    + '<div class="cat-deco" aria-hidden="true">'
+    + '<span class="deco-blob b1"></span><span class="deco-blob b2"></span><span class="deco-blob b3"></span>'
+    + '<svg class="deco-ic i1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><rect x="3" y="9" width="18" height="6" rx="3" transform="rotate(-45 12 12)"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>'
+    + '<svg class="deco-ic i2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><ellipse cx="12" cy="12" rx="9" ry="4"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(120 12 12)"/></svg>'
+    + '<svg class="deco-ic i3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><path d="M12 2s7 7.58 7 12a7 7 0 0 1-14 0c0-4.42 7-12 7-12z"/></svg>'
+    + '<svg class="deco-ic i4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.6"><path d="M12 2 22 12 12 22 2 12 Z"/></svg>'
+    + '<svg class="deco-rings" viewBox="0 0 600 600"><circle cx="300" cy="300" r="180"/><circle cx="300" cy="300" r="240"/><circle cx="300" cy="300" r="300"/></svg>'
+    + '</div>'
+    + '<div class="shell cat-head">'+esc(t('cat_h1'))+'</h1><p>'+esc(t('cat_sub'))+'</p></div>'
     + '<div class="filters"><div class="shell">'
     + '<div class="search-wrap"><i class="ti ti-search" aria-hidden="true"></i>'
     + '<input id="q" type="search" placeholder="'+esc(t('q_ph'))+'" value="'+esc(state.q)+'" aria-label="'+esc(t('search_aria'))+'">'
