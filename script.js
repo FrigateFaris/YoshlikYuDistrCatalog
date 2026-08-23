@@ -408,7 +408,9 @@ var lastCatalogState=null;
 
 function viewCatalog(params){
   topbar.classList.remove('on-dark');
-  state.q=params.get('q')||''; state.cat=params.get('cat')||''; state.shown=PAGE;
+  var newQ=params.get('q')||'', newCat=params.get('cat')||'';
+  if(newQ!==state.q || newCat!==state.cat){ state.shown=PAGE; }
+  state.q=newQ; state.cat=newCat;
 
   var chips=['<button class="chip" data-cat="" aria-pressed="'+(!state.cat)+'">'+esc(t('all'))+' <em>'+P.length+'</em></button>']
     .concat(CATS.filter(function(c){ return counts[c]; }).map(function(c){
