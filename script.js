@@ -271,42 +271,49 @@ function observe(){
 
 /* ---------------- home ---------------- */
 function buildHomeSlider(brands,bc){
-  var slides=brands.map(function(x,i){
-    var h=hue(CATS[i%CATS.length]);
+  var picks=[];
+  brands.forEach(function(x){
     var withPhoto=P.filter(function(p){ return p.brand===x && p.image; });
-    var pick=withPhoto[0]||null;
-    var bg=pick?'<img class="hs-slide-bg" src="'+esc(pick.image)+'" alt="" loading="lazy">':'';
-    return '<a class="hs-slide" href="'+L('#/catalog?q='+encodeURIComponent(x))+'" style="--h:'+h+'">'
-      + bg
-      + '<span class="hs-slide-wash"></span>'
-      + '<span class="hs-slide-info"><b>'+esc(x)+'</b><span>'+bc[x]+' '+esc(nProducts(bc[x]).split(' ').slice(1).join(' '))+'</span></span>'
-      + '</a>';
+    picks=picks.concat(withPhoto.slice(0,4));
+  });
+  if(picks.length<8) picks=P.filter(function(p){ return p.image; }).slice(0,16);
+
+  var slides=picks.map(function(p){
+    var h=hue(p.category);
+    return '<a class="hs-card" href="'+L('#/p/'+esc(p.slug))+'" style="--h:'+h+'">'
+      + '<span class="hs-card-ph"><img src="'+esc(p.image)+'" alt="'+esc(F(p,'name'))+'" loading="lazy"></span>'
+      + '<span class="hs-card-body">'
+      + '<span class="hs-card-brand">'+esc(p.brand)+'</span>'
+      + '<b>'+esc(F(p,'name'))+'</b>'
+      + '<span class="hs-card-cat">'+esc(catLabel(p.category))+'</span>'
+      + '</span></a>';
   }).join('');
-  var dots=brands.map(function(_,i){ return '<button class="hs-dot" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"></button>'; }).join('');
-  return '<section class="home-slider" id="homeSlider">'
+
+  return '<section class="home-slider">'
+    + '<div class="hs-head shell">'
+    + '<h2>'+esc(t('sec_brands'))+'</h2>'
+    + '<span class="hs-arrows">'
+    + '<button class="hs-nav" id="hsPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    + '<button class="hs-nav" id="hsNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    + '</span></div>'
     + '<div class="hs-track" id="hsTrack">'+slides+'</div>'
-    + '<button class="hs-nav prev" id="hsPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
-    + '<button class="hs-nav next" id="hsNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
-    + '<div class="hs-dots" id="hsDots">'+dots+'</div>'
     + '</section>';
 }
 function wireHomeSlider(){
   var track=document.getElementById('hsTrack'); if(!track) return;
-  var slides=track.children, dots=document.querySelectorAll('.hs-dot');
-  var idx=0, timer=null;
-  function go(i){
-    idx=(i+slides.length)%slides.length;
-    track.scrollTo({left:slides[idx].offsetLeft-track.offsetLeft,behavior:'smooth'});
-    dots.forEach(function(d,n){ d.classList.toggle('on',n===idx); });
+  var prev=document.getElementById('hsPrev'), next=document.getElementById('hsNext');
+  function step(){
+    var c=track.querySelector('.hs-card');
+    return c ? c.offsetWidth+18 : 260;
   }
-  function next(){ go(idx+1); }
-  document.getElementById('hsPrev').addEventListener('click',function(){ go(idx-1); restart(); });
-  document.getElementById('hsNext').addEventListener('click',function(){ go(idx+1); restart(); });
-  dots.forEach(function(d){ d.addEventListener('click',function(){ go(+d.dataset.i); restart(); }); });
-  function restart(){ clearInterval(timer); timer=setInterval(next,5000); }
-  track.addEventListener('mouseenter',function(){ clearInterval(timer); });
-  track.addEventListener('mouseleave',restart);
-  go(0); restart();
+  function upd(){
+    prev.disabled = track.scrollLeft < 8;
+    next.disabled = track.scrollLeft > track.scrollWidth - track.clientWidth - 8;
+  }
+  prev.addEventListener('click',function(){ track.scrollBy({left:-step()*2,behavior:'smooth'}); });
+  next.addEventListener('click',function(){ track.scrollBy({left:step()*2,behavior:'smooth'}); });
+  track.addEventListener('scroll',upd,{passive:true});
+  upd();
 }
 function viewHome(){
   topbar.classList.add('on-dark');
