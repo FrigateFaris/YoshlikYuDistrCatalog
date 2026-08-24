@@ -270,6 +270,44 @@ function observe(){
 }
 
 /* ---------------- home ---------------- */
+function buildHomeSlider(brands,bc,logos){
+  var slides=brands.map(function(x,i){
+    var h=hue(CATS[i%CATS.length]);
+    var logo=logos[x];
+    var art=logo?'<img src="'+esc(logo)+'" alt="'+esc(x)+'" loading="lazy">'
+      :'<span class="hs-slide-badge">'+esc(x)+'</span>';
+    return '<a class="hs-slide" href="'+L('#/catalog?q='+encodeURIComponent(x))+'" style="--h:'+h+'">'
+      + '<span class="hs-slide-wash"></span>'
+      + '<span class="hs-slide-logo">'+art+'</span>'
+      + '<span class="hs-slide-info"><b>'+esc(x)+'</b><span>'+bc[x]+' '+esc(nProducts(bc[x]).split(' ').slice(1).join(' '))+'</span></span>'
+      + '</a>';
+  }).join('');
+  var dots=brands.map(function(_,i){ return '<button class="hs-dot" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"></button>'; }).join('');
+  return '<section class="home-slider" id="homeSlider">'
+    + '<div class="hs-track" id="hsTrack">'+slides+'</div>'
+    + '<button class="hs-nav prev" id="hsPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    + '<button class="hs-nav next" id="hsNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    + '<div class="hs-dots" id="hsDots">'+dots+'</div>'
+    + '</section>';
+}
+function wireHomeSlider(){
+  var track=document.getElementById('hsTrack'); if(!track) return;
+  var slides=track.children, dots=document.querySelectorAll('.hs-dot');
+  var idx=0, timer=null;
+  function go(i){
+    idx=(i+slides.length)%slides.length;
+    track.scrollTo({left:slides[idx].offsetLeft-track.offsetLeft,behavior:'smooth'});
+    dots.forEach(function(d,n){ d.classList.toggle('on',n===idx); });
+  }
+  function next(){ go(idx+1); }
+  document.getElementById('hsPrev').addEventListener('click',function(){ go(idx-1); restart(); });
+  document.getElementById('hsNext').addEventListener('click',function(){ go(idx+1); restart(); });
+  dots.forEach(function(d){ d.addEventListener('click',function(){ go(+d.dataset.i); restart(); }); });
+  function restart(){ clearInterval(timer); timer=setInterval(next,5000); }
+  track.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  track.addEventListener('mouseleave',restart);
+  go(0); restart();
+}
 function viewHome(){
   topbar.classList.add('on-dark');
   var tiles=CATS.filter(function(c){ return counts[c]; }).map(function(c){
@@ -281,7 +319,16 @@ function viewHome(){
       + '<span class="n">'+esc(nProducts(counts[c]))+'</span>'
       + '<i class="ti ti-arrow-up-right arw" aria-hidden="true" style="color:'+h+'"></i></a>';
   }).join('');
-
+  var BRAND_LOGOS={
+    'NOW Foods':'https://dev.vitaline.uz/wp-content/uploads/2021/01/now.jpg',
+    'ECOVITA':'https://retail.vitaline.uz/wp-content/uploads/2026/05/ecovita-transparent-logo.webp',
+    'Solaray':'https://dev.vitaline.uz/wp-content/uploads/2021/01/solaray-1.jpg',
+    'NaturesPlus':'https://dev.vitaline.uz/wp-content/uploads/2021/02/natures-plus.png',
+    "Nature's Answer":'https://retail.vitaline.uz/wp-content/uploads/2025/05/natures-answer-logo.webp',
+    'California Gold Nutrition':'https://dev.vitaline.uz/wp-content/uploads/2021/01/cgn.jpg',
+    'Life Extension':'https://dev.vitaline.uz/wp-content/uploads/2022/04/9e4b1448-93e3-45ce-a227-00177fadee94.png',
+    'BioMagic':'https://retail.vitaline.uz/wp-content/uploads/2025/06/bio-magic-logo.webp'
+  };
   function mini(slug){
     var p=bySlug(slug); if(!p) return '';
     var h=hue(p.category);
@@ -321,8 +368,7 @@ function viewHome(){
     + '<div class="hs-hint"><span>'+esc(t('hs_often'))+'</span>'+tips+'</div>'
     + '</div></div></div></section>'
 
-    + '<section class="shelf" aria-hidden="true"><div class="track">'+a+a+'</div>'
-    + '<div class="track rev">'+b+b+'</div></section>'
+    + buildHomeSlider(BRANDS,bc,BRAND_LOGOS)
 
     + '<section class="band-cream"><div class="shell sec">'
     + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_parts'))+'</span>'
@@ -342,6 +388,7 @@ function viewHome(){
     + '</div></section>';
 
   heroSearch();
+  wireHomeSlider();
   var glow=document.getElementById('glow'), rings=document.getElementById('rings');
   if(glow && window.matchMedia('(hover:hover)').matches){
     var hero=glow.parentNode, tk=false;
