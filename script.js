@@ -270,15 +270,15 @@ function observe(){
 }
 
 /* ---------------- home ---------------- */
-function buildHomeSlider(brands,bc,logos){
+function buildHomeSlider(brands,bc){
   var slides=brands.map(function(x,i){
     var h=hue(CATS[i%CATS.length]);
-    var logo=logos[x];
-    var art=logo?'<img src="'+esc(logo)+'" alt="'+esc(x)+'" loading="lazy">'
-      :'<span class="hs-slide-badge">'+esc(x)+'</span>';
+    var withPhoto=P.filter(function(p){ return p.brand===x && p.image; });
+    var pick=withPhoto[0]||null;
+    var bg=pick?'<img class="hs-slide-bg" src="'+esc(pick.image)+'" alt="" loading="lazy">':'';
     return '<a class="hs-slide" href="'+L('#/catalog?q='+encodeURIComponent(x))+'" style="--h:'+h+'">'
+      + bg
       + '<span class="hs-slide-wash"></span>'
-      + '<span class="hs-slide-logo">'+art+'</span>'
       + '<span class="hs-slide-info"><b>'+esc(x)+'</b><span>'+bc[x]+' '+esc(nProducts(bc[x]).split(' ').slice(1).join(' '))+'</span></span>'
       + '</a>';
   }).join('');
@@ -319,16 +319,7 @@ function viewHome(){
       + '<span class="n">'+esc(nProducts(counts[c]))+'</span>'
       + '<i class="ti ti-arrow-up-right arw" aria-hidden="true" style="color:'+h+'"></i></a>';
   }).join('');
-  var BRAND_LOGOS={
-    'NOW Foods':'https://dev.vitaline.uz/wp-content/uploads/2021/01/now.jpg',
-    'ECOVITA':'https://retail.vitaline.uz/wp-content/uploads/2026/05/ecovita-transparent-logo.webp',
-    'Solaray':'https://dev.vitaline.uz/wp-content/uploads/2021/01/solaray-1.jpg',
-    'NaturesPlus':'https://dev.vitaline.uz/wp-content/uploads/2021/02/natures-plus.png',
-    "Nature's Answer":'https://retail.vitaline.uz/wp-content/uploads/2025/05/natures-answer-logo.webp',
-    'California Gold Nutrition':'https://dev.vitaline.uz/wp-content/uploads/2021/01/cgn.jpg',
-    'Life Extension':'https://dev.vitaline.uz/wp-content/uploads/2022/04/9e4b1448-93e3-45ce-a227-00177fadee94.png',
-    'BioMagic':'https://retail.vitaline.uz/wp-content/uploads/2025/06/bio-magic-logo.webp'
-  };
+
   function mini(slug){
     var p=bySlug(slug); if(!p) return '';
     var h=hue(p.category);
@@ -368,8 +359,7 @@ function viewHome(){
     + '<div class="hs-hint"><span>'+esc(t('hs_often'))+'</span>'+tips+'</div>'
     + '</div></div></div></section>'
 
-    + buildHomeSlider(BRANDS,bc,BRAND_LOGOS)
-
+    + buildHomeSlider(BRANDS,bc)
     + '<section class="band-cream"><div class="shell sec">'
     + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_parts'))+'</span>'
     + '<h2>'+esc(t('sec_parts_h'))+'</h2><p>'+esc(t('sec_parts_p'))+'</p></div>'
