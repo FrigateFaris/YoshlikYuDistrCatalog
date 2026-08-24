@@ -58,10 +58,14 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 .uz-note i{color:var(--terra);font-size:15px}
 
 /* ---------- hero ---------- */
-.hero{position:relative;background:var(--ink);color:#fff;overflow:hidden;padding:148px 0 108px;isolation:isolate}
+.hero{position:relative;background:linear-gradient(150deg,#3A2313 0%,#6B331A 48%,#8A3E14 100%);color:#fff;overflow:hidden;padding:148px 0 108px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,175,110,.22) 45%,transparent 62%);
+  background-size:240% 240%;animation:heroShimmer 9s ease-in-out infinite}
+@keyframes heroShimmer{0%{background-position:0% 0%}50%{background-position:100% 100%}100%{background-position:0% 0%}}
 .hero-glow{position:absolute;width:900px;height:900px;left:var(--gx,58%);top:var(--gy,12%);transform:translate(-50%,-50%);
-  background:radial-gradient(circle,rgba(194,84,31,.30),rgba(194,84,31,.09) 42%,transparent 66%);pointer-events:none;z-index:-1;transition:left .5s var(--e),top .5s var(--e)}
-.hero-glow.b{width:620px;height:620px;left:10%;top:92%;background:radial-gradient(circle,rgba(206,138,22,.20),transparent 64%);transition:none}
+  background:radial-gradient(circle,rgba(255,140,60,.45),rgba(255,140,60,.14) 42%,transparent 66%);pointer-events:none;z-index:-1;transition:left .5s var(--e),top .5s var(--e)}
+.hero-glow.b{width:620px;height:620px;left:10%;top:92%;background:radial-gradient(circle,rgba(255,190,80,.32),transparent 64%);transition:none}
 .hero::after{content:"";position:absolute;inset:0;background-image:var(--noise);opacity:.05;pointer-events:none;z-index:-1}
 .rings{position:absolute;right:-190px;top:-150px;width:680px;height:680px;z-index:-1;opacity:.5;pointer-events:none;will-change:transform}
 .rings circle{fill:none;stroke:rgba(255,255,255,.09);transform-origin:50% 50%}
@@ -371,6 +375,7 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
   .hs-cat span{display:none}
 }
 @media(prefers-reduced-motion:reduce){
+  .hero::before{animation:none}
   *{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
   .rv{opacity:1;transform:none}
   .hero h1 .ln>span{transform:none}
