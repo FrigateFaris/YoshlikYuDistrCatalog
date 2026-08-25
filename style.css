@@ -527,3 +527,18 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
   margin: 0;
   object-fit: contain;
 }
+.brand-banners{position:relative;background:var(--ink);overflow:hidden}
+.bb-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bb-track::-webkit-scrollbar{display:none}
+.bb-slide{flex:0 0 100%;scroll-snap-align:start;display:block;line-height:0}
+.bb-slide img{width:100%;height:auto;display:block}
+.bb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;z-index:2;transition:.2s;backdrop-filter:blur(6px)}
+.bb-nav:hover{background:rgba(255,255,255,.3)}
+.bb-nav.prev{left:16px}.bb-nav.next{right:16px}
+.bb-dots{position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center;gap:7px;z-index:2}
+.bb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:.2s}
+.bb-dot.on{background:#fff;width:20px;border-radius:5px}
+@media(max-width:640px){
+  .bb-nav{width:36px;height:36px}
+}

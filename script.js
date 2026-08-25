@@ -335,6 +335,44 @@ function wireHomeSlider(){
   track.addEventListener('scroll',upd,{passive:true});
   upd();
 }
+function buildBrandBanners(){
+  var banners=[
+    {file:'now-foods',brand:'NOW Foods'},
+    {file:'ecovita',brand:'ECOVITA'},
+    {file:'life-extension',brand:'Life Extension'},
+    {file:'solaray',brand:'Solaray'},
+    {file:'vita-garden',brand:'Vita Garden'}
+  ];
+  var slides=banners.map(function(b){
+    return '<a class="bb-slide" href="'+L('#/catalog?q='+encodeURIComponent(b.brand))+'">'
+      + '<img src="images/banners/banner-'+b.file+'.jpg" alt="'+esc(b.brand)+'" loading="lazy"></a>';
+  }).join('');
+  var dots=banners.map(function(_,i){
+    return '<button class="bb-dot" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"></button>';
+  }).join('');
+  return '<section class="brand-banners"><div class="bb-track" id="bbTrack">'+slides+'</div>'
+    + '<button class="bb-nav prev" id="bbPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    + '<button class="bb-nav next" id="bbNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    + '<div class="bb-dots" id="bbDots">'+dots+'</div></section>';
+}
+function wireBrandBanners(){
+  var track=document.getElementById('bbTrack'); if(!track) return;
+  var slides=track.children, dots=document.querySelectorAll('.bb-dot');
+  var idx=0, timer=null;
+  function go(i){
+    idx=(i+slides.length)%slides.length;
+    track.scrollTo({left:slides[idx].offsetLeft-track.offsetLeft,behavior:'smooth'});
+    dots.forEach(function(d,n){ d.classList.toggle('on',n===idx); });
+  }
+  function next(){ go(idx+1); }
+  document.getElementById('bbPrev').addEventListener('click',function(){ go(idx-1); restart(); });
+  document.getElementById('bbNext').addEventListener('click',function(){ go(idx+1); restart(); });
+  dots.forEach(function(d){ d.addEventListener('click',function(){ go(+d.dataset.i); restart(); }); });
+  function restart(){ clearInterval(timer); timer=setInterval(next,6000); }
+  track.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  track.addEventListener('mouseleave',restart);
+  go(0); restart();
+}
 function viewHome(){
   topbar.classList.add('on-dark');
   var tiles=CATS.filter(function(c){ return counts[c]; }).map(function(c){
@@ -358,9 +396,6 @@ function viewHome(){
   }
   var a=SHELF_A.map(mini).join(''), b=SHELF_B.map(mini).join('');
   var bc={}; P.forEach(function(p){ bc[p.brand]=(bc[p.brand]||0)+1; });
-  var brandChips=BRANDS.map(function(x){
-    return '<a class="brand-chip rv" href="'+L('#/catalog?q='+encodeURIComponent(x))+'"><b>'+esc(x)+'</b> · '+bc[x]+'</a>';
-  }).join('');
   var ribbon=BRANDS.concat(BRANDS).map(function(x){
     return '<span>'+esc(x)+'</span><i class="ti ti-circle-filled" aria-hidden="true"></i>';
   }).join('');
@@ -394,10 +429,7 @@ function viewHome(){
 
     + '<div class="ribbon" aria-hidden="true"><div class="rt">'+ribbon+'</div></div>'
 
-    + '<section><div class="shell sec" style="padding-top:0">'
-    + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_port'))+'</span>'
-    + '<h2>'+esc(t('sec_brands'))+'</h2><p>'+esc(t('sec_brands_p'))+'</p></div>'
-    + '<div class="brand-row">'+brandChips+'</div></div></section>'
+    + buildBrandBanners()
 
     + '<section class="cta-band"><span class="glow"></span><div class="shell cta-in">'
     + '<div><h2>'+esc(t('cta_h'))+'</h2><p>'+esc(t('cta_p'))+'</p></div>'
@@ -405,6 +437,7 @@ function viewHome(){
     + '</div></section>';
 
   heroSearch();
+  wireBrandBanners();
   wireHomeSlider();
   var glow=document.getElementById('glow'), rings=document.getElementById('rings');
   if(glow && window.matchMedia('(hover:hover)').matches){
@@ -567,7 +600,17 @@ function filtered(){
   var tm=terms();
   var list=P.filter(function(p){
     if(state.cat && p.category!==state.cat && p.category_extra!==state.cat) return false;
-    for(var i=0;i<tm.length;i++) if(p._idx.indexOf(tm[i])===-1) return false;
+    for(var i=0;i<tm.length;i++){
+        var vars=expandTerm(tm[i]), hit=false;
+        for(var v=0;v<vars.length;v++){
+          var needle=vars[v];
+          var re=needle.length<=2
+            ? new RegExp('(^|[^a-zа-я0-9])'+needle.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-zа-я0-9]|$)','i')
+            : null;
+          if(re ? re.test(p._idx) : p._idx.indexOf(needle)!==-1){ hit=true; break; }
+        }
+        if(!hit) return false;
+      }
     return true;
   });
   if(state.sort==='name') list=list.slice().sort(function(a,b){ return a.name.localeCompare(b.name,'ru'); });
