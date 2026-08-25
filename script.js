@@ -185,6 +185,26 @@ function packStr(p){
   var f=norm(p.form);
   return p.count+' '+(f.indexOf('таблет')>-1?t('w_tabs'):(f.indexOf('порош')>-1?t('w_serv'):t('w_caps')));
 }
+var SEARCH_MAP={
+  'витамин':'vitamin','витамины':'vitamin','магний':'magnesium','кальций':'calcium',
+  'цинк':'zinc','железо':'iron','селен':'selenium','хром':'chromium','йод':'iodine',
+  'омега':'omega','коллаген':'collagen','биотин':'biotin','инозитол':'inositol',
+  'мелатонин':'melatonin','таурин':'taurine','аргинин':'arginine','карнитин':'carnitine',
+  'цистеин':'cysteine','лизин':'lysine','глутатион':'glutathione','лецитин':'lecithin',
+  'берберин':'berberine','куркума':'turmeric','эхинацея':'echinacea','спирулина':'spirulina',
+  'пробиотик':'probiotic','пробиотики':'probiotic','прополис':'propolis','рыбий':'fish',
+  'кислота':'acid','фолиевая':'folic','медь':'copper','марганец':'manganese','калий':'potassium'
+};
+function expandTerm(w){
+  var out=[w];
+  if(SEARCH_MAP[w]) out.push(SEARCH_MAP[w]);
+  var lat={'а':'a','в':'b','е':'e','к':'k','м':'m','н':'h','о':'o','р':'p','с':'c','т':'t','у':'y','х':'x','д':'d'};
+  if(w.length<=2){
+    var tr=w.split('').map(function(ch){ return lat[ch]||ch; }).join('');
+    if(tr!==w) out.push(tr);
+  }
+  return out;
+}
 function terms(){ var q=norm(state.q).trim(); return q?q.split(/\s+/):[]; }
 
 /* ---------------- chrome ---------------- */
@@ -411,7 +431,17 @@ function heroSearch(){
     if(q.length<2){ drop.classList.remove('open'); drop.innerHTML=''; hits=[]; return; }
     var tm=q.split(/\s+/);
     hits=P.filter(function(p){
-      for(var i=0;i<tm.length;i++) if(p._idx.indexOf(tm[i])===-1) return false;
+      for(var i=0;i<tm.length;i++){
+        var vars=expandTerm(tm[i]), hit=false;
+        for(var v=0;v<vars.length;v++){
+          var needle=vars[v];
+          var re=needle.length<=2
+            ? new RegExp('(^|[^a-zа-я0-9])'+needle.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-zа-я0-9]|$)','i')
+            : null;
+          if(re ? re.test(p._idx) : p._idx.indexOf(needle)!==-1){ hit=true; break; }
+        }
+        if(!hit) return false;
+      }
       return true;
     }).slice(0,5);
     if(!hits.length){
