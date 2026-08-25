@@ -180,6 +180,10 @@ function prepare(){
 function byCat(c){ return P.filter(function(p){ return p.category===c||p.category_extra===c; }); }
 function bySlug(s){ for(var i=0;i<P.length;i++) if(P[i].slug===s) return P[i]; return null; }
 function doseStr(p){ return p.dose?p.dose+(p.unit?' '+unitLabel(p.unit):''):''; }
+function formWord(form){
+  var f=norm(form);
+  return f.indexOf('таблет')>-1?t('w_tabs'):(f.indexOf('порош')>-1?t('w_serv'):t('w_caps'));
+}
 function packStr(p){
   if(!p.count||p.count===1) return '';
   var f=norm(p.form);
@@ -257,7 +261,7 @@ function cardHTML(p,tm){
     :'<i class="ti '+icon(p.category)+' ghost" aria-hidden="true" style="color:'+rgba(h,.42)+'"></i>';
   return '<a class="card rv" href="'+L('#/p/'+esc(p.slug))+'" style="--h:'+h+'">'
     + '<div class="thumb" style="background-color:var(--cream);background-image:'+mix(h,.20)+'">'+art
-    + '<span class="mono" style="color:'+rgba(h,.72)+'">'+esc(catLabel(p.category))+'</span></div>'
+    + '</div>'
     + '<div class="card-b"><span class="card-brand" style="color:'+h+'">'+hl(p.brand,tm)+'</span>'
     + '<span class="card-name">'+hl(F(p,'name'),tm)+'</span>'
     + '<span class="spec">'+bits.join('<span aria-hidden="true">·</span>')+'</span></div></a>';
@@ -421,7 +425,7 @@ function viewHome(){
     + '<div class="hs-hint"><span>'+esc(t('hs_often'))+'</span>'+tips+'</div>'
     + '</div></div></div></section>'
 
-    + buildHomeSlider(BRANDS,bc)
+    + buildBrandBanners()
     + '<section class="band-cream"><div class="shell sec">'
     + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_parts'))+'</span>'
     + '<h2>'+esc(t('sec_parts_h'))+'</h2><p>'+esc(t('sec_parts_p'))+'</p></div>'
@@ -429,7 +433,6 @@ function viewHome(){
 
     + '<div class="ribbon" aria-hidden="true"><div class="rt">'+ribbon+'</div></div>'
 
-    + buildBrandBanners()
 
     + '<section class="cta-band"><span class="glow"></span><div class="shell cta-in">'
     + '<div><h2>'+esc(t('cta_h'))+'</h2><p>'+esc(t('cta_p'))+'</p></div>'
@@ -438,7 +441,6 @@ function viewHome(){
 
   heroSearch();
   wireBrandBanners();
-  wireHomeSlider();
   var glow=document.getElementById('glow'), rings=document.getElementById('rings');
   if(glow && window.matchMedia('(hover:hover)').matches){
     var hero=glow.parentNode, tk=false;
@@ -656,6 +658,19 @@ function renderList(appendOnly){
 }
 
 /* ---------------- product ---------------- */
+function nameStem(name){
+  return norm(name)
+    .replace(/\d+[.,]?\d*/g,'')
+    .replace(/\b(мг|мкг|ме|iu|mcg|mg|xb|капсул\w*|таблет\w*|softgels?|vcaps?|caps?|kapsula\w*|tabletka\w*|шт\.?)\b/g,'')
+    .replace(/[(),]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+function sameDose(p){
+  var stem=nameStem(p.name);
+  return P.filter(function(x){
+    return x.slug!==p.slug && x.brand===p.brand && nameStem(x.name)===stem;
+  });
+}
 function similar(p){
   var pool=byCat(p.category).filter(function(x){ return x.slug!==p.slug; });
   pool.sort(function(a,b){ return (b.brand===p.brand)-(a.brand===p.brand); });
@@ -698,8 +713,20 @@ function viewProduct(slug){
   ks.push([t('l_form'),formLabel(p.form)]);
   if(p.country) ks.push([t('l_country'),countryLabel(p.country)]);
   var tags=[p.category].concat(p.category_extra?[p.category_extra]:[]);
-  var art=p.image?'<img src="'+esc(p.image)+'" alt="'+esc(F(p,'name'))+'">'
-    :'<i class="ti '+icon(p.category)+' ghost" aria-hidden="true" style="color:'+rgba(h,.34)+'"></i>';
+  var packs=[{count:p.count,image:p.image}];
+  Object.keys(p).filter(function(k){ return /^image_extra_\d+$/.test(k); })
+    .map(function(k){ return parseInt(k.match(/\d+$/)[0],10); })
+    .sort(function(a,b){ return a-b; })
+    .forEach(function(n){
+      var img=p['image_extra_'+n], cnt=p['packs_extra_'+n];
+      if(img||cnt){ packs.push({count:cnt||p.count, image:img||p.image}); }
+    });
+  var hasMulti=packs.length>1;
+  var shotSlides=packs.map(function(v){
+    var im=v.image?'<img src="'+esc(v.image)+'" alt="'+esc(F(p,'name'))+'">'
+      :'<i class="ti '+icon(p.category)+' ghost" aria-hidden="true" style="color:'+rgba(h,.34)+'"></i>';
+    return '<div class="ps-slide">'+im+'</div>';
+  }).join('');
 
   var secs=[['opis',t('b_desc')],['sostav',t('b_comp')],['prim',t('b_use')]];
   if(p.warnings) secs.push(['pred',t('b_warn')]);
@@ -717,7 +744,11 @@ function viewProduct(slug){
     + '<button class="icon-btn" id="sharebtn" aria-label="'+esc(t('share'))+'"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>'
     + '</div></div>'
     + '<div class="p-top">'
-    + '<div class="p-shot" style="background-color:var(--cream);background-image:'+mix(h,.24)+'">'+art
+    + '<div class="p-shot" style="background-color:var(--cream);background-image:'+mix(h,.24)+'">'
+    + '<div class="ps-track" id="psTrack">'+shotSlides+'</div>'
+    + (hasMulti?'<button class="ps-nav prev" id="psPrev" aria-label="Предыдущее фото"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
+      + '<button class="ps-nav next" id="psNext" aria-label="Следующее фото"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
+      + '<div class="ps-dots">'+packs.map(function(_,i){return '<span class="ps-dot'+(i===0?' on':'')+'" data-i="'+i+'"></span>';}).join('')+'</div>':'')
     + '<span class="mono" style="color:'+rgba(h,.7)+'">'+esc(p.brand)+'</span></div>'
     + '<div><span class="p-brand" style="color:'+h+';background:'+rgba(h,.11)+'">'+esc(p.brand)+'</span>'
     + '<h1 class="p-title">'+esc(F(p,'name'))+'</h1>'
@@ -725,10 +756,18 @@ function viewProduct(slug){
     + '<p class="p-lead">'+esc(F(p,'short'))+'</p>'
     + '<div class="keyspecs">'+ks.map(function(x){
         return '<div class="ks"><span>'+esc(x[0])+'</span><b>'+esc(x[1])+'</b></div>'; }).join('')+'</div>'
+    + (hasMulti?'<div class="pack-pills">'+packs.map(function(v,i){
+        return '<button class="pack-pill'+(i===0?' on':'')+'" data-i="'+i+'">'+esc(v.count)+' '+esc(formWord(p.form))+'</button>';
+      }).join('')+'</div>':'')
     + '<div class="tagline">'+tags.map(function(x){
         var th=hue(x);
         return '<a class="tag" href="'+L('#/catalog?cat='+encodeURIComponent(x))+'" style="color:'+th+';background:'+rgba(th,.12)+'">'+esc(catLabel(x))+'</a>';
-      }).join('')+'</div></div></div></div></section>'
+      }).join('')+'</div>'
+    + (sameDose(p).length ? '<div class="dose-links"><span>Другие дозировки:</span>'
+        + sameDose(p).map(function(x){
+            return '<a href="'+L('#/p/'+esc(x.slug))+'">'+esc(doseStr(x)||x.name)+'</a>';
+          }).join('') + '</div>' : '')
+    + '</div></div></div></section>'
 
     + '<div class="shell"><div class="p-wrap">'
     + '<nav class="rail no-print" id="rail">'+secs.map(function(s,i){
@@ -757,7 +796,21 @@ function viewProduct(slug){
         + '<div class="grid">'+sameBrand(p).map(function(x){ return cardHTML(x); }).join('')+'</div>' : '')
     + '<div class="more-wrap" style="padding:30px 0 0"><a class="btn-outline" href="'+L('#/catalog')+'">'+esc(t('all_cat'))+' <i class="ti ti-arrow-right" aria-hidden="true"></i></a></div>'
     + '</div></section>';
-
+  if(hasMulti){
+    var psTrack=document.getElementById('psTrack'), psSlides=psTrack.children;
+    var psDots=document.querySelectorAll('.ps-dot'), psPills=document.querySelectorAll('.pack-pill');
+    var curPs=0;
+    function psGo(i){
+      curPs=(i+psSlides.length)%psSlides.length;
+      psTrack.scrollTo({left:psSlides[curPs].offsetLeft-psTrack.offsetLeft,behavior:'smooth'});
+      psDots.forEach(function(d,n){ d.classList.toggle('on',n===curPs); });
+      psPills.forEach(function(pl,n){ pl.classList.toggle('on',n===curPs); });
+    }
+    document.getElementById('psPrev').addEventListener('click',function(){ psGo(curPs-1); });
+    document.getElementById('psNext').addEventListener('click',function(){ psGo(curPs+1); });
+    psDots.forEach(function(d){ d.addEventListener('click',function(){ psGo(+d.dataset.i); }); });
+    psPills.forEach(function(pl){ pl.addEventListener('click',function(){ psGo(+pl.dataset.i); }); });
+  }
   document.getElementById('qrbtn').addEventListener('click',function(){ openQR(p); });
   document.getElementById('sharebtn').addEventListener('click',function(){ share(p); });
   document.getElementById('printbtn').addEventListener('click',function(){ window.print(); });
