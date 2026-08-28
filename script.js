@@ -354,10 +354,9 @@ function buildBrandBanners(){
   var dots=banners.map(function(_,i){
     return '<button class="bb-dot'+(i===0?' on':'')+'" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"><span class="bb-dot-fill"></span></button>';
   }).join('');
-  return '<section class="brand-banners"><div class="shell"><div class="bb-inner"><div class="bb-stage" id="bbStage">'+slides+'</div>'    + '<button class="bb-nav prev" id="bbPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
-    + '<button class="bb-nav next" id="bbNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
-    + '<div class="bb-dots" id="bbDots">'+dots+'</div></div></div></section>';
-  }
+  return '<section class="brand-banners"><div class="bb-stage" id="bbStage">'+slides+'</div>'    + '<button class="bb-nav next" id="bbNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    + '<div class="bb-dots" id="bbDots">'+dots+'</div></section>';
+    }
 function wireBrandBanners(){
   var stage=document.getElementById('bbStage'); if(!stage) return;
   var slides=stage.querySelectorAll('.bb-slide'), dots=document.querySelectorAll('.bb-dot');
