@@ -347,35 +347,53 @@ function buildBrandBanners(){
     {file:'solaray',brand:'Solaray'},
     {file:'vita-garden',brand:'Vita Garden'}
   ];
-  var slides=banners.map(function(b){
-    return '<a class="bb-slide" href="'+L('#/catalog?q='+encodeURIComponent(b.brand))+'">'
+  var slides=banners.map(function(b,i){
+    return '<a class="bb-slide'+(i===0?' on':'')+'" href="'+L('#/catalog?q='+encodeURIComponent(b.brand))+'">'
       + '<img src="images/banners/banner-'+b.file+'.jpg" alt="'+esc(b.brand)+'" loading="lazy"></a>';
   }).join('');
   var dots=banners.map(function(_,i){
-    return '<button class="bb-dot" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"></button>';
+    return '<button class="bb-dot'+(i===0?' on':'')+'" data-i="'+i+'" aria-label="Слайд '+(i+1)+'"><span class="bb-dot-fill"></span></button>';
   }).join('');
-  return '<section class="brand-banners"><div class="bb-track" id="bbTrack">'+slides+'</div>'
+  return '<section class="brand-banners"><div class="bb-stage" id="bbStage">'+slides+'</div>'
     + '<button class="bb-nav prev" id="bbPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>'
     + '<button class="bb-nav next" id="bbNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>'
     + '<div class="bb-dots" id="bbDots">'+dots+'</div></section>';
 }
 function wireBrandBanners(){
-  var track=document.getElementById('bbTrack'); if(!track) return;
-  var slides=track.children, dots=document.querySelectorAll('.bb-dot');
-  var idx=0, timer=null;
+  var stage=document.getElementById('bbStage'); if(!stage) return;
+  var slides=stage.querySelectorAll('.bb-slide'), dots=document.querySelectorAll('.bb-dot');
+  var idx=0, timer=null, DURATION=6000;
+
   function go(i){
+    var prev=idx;
     idx=(i+slides.length)%slides.length;
-    track.scrollTo({left:slides[idx].offsetLeft-track.offsetLeft,behavior:'smooth'});
+    if(idx===prev) return;
+    slides[prev].classList.remove('on');
+    slides[prev].classList.add(idx>prev||(prev===slides.length-1&&idx===0)?'out-left':'out-right');
+    slides[idx].classList.remove('out-left','out-right');
+    slides[idx].classList.add('on');
+    setTimeout(function(){ slides[prev].classList.remove('out-left','out-right'); },700);
     dots.forEach(function(d,n){ d.classList.toggle('on',n===idx); });
+    restartFill();
   }
   function next(){ go(idx+1); }
   document.getElementById('bbPrev').addEventListener('click',function(){ go(idx-1); restart(); });
   document.getElementById('bbNext').addEventListener('click',function(){ go(idx+1); restart(); });
   dots.forEach(function(d){ d.addEventListener('click',function(){ go(+d.dataset.i); restart(); }); });
-  function restart(){ clearInterval(timer); timer=setInterval(next,6000); }
-  track.addEventListener('mouseenter',function(){ clearInterval(timer); });
-  track.addEventListener('mouseleave',restart);
-  go(0); restart();
+
+  function restartFill(){
+    dots.forEach(function(d){ var f=d.querySelector('.bb-dot-fill'); if(f){ f.style.transition='none'; f.style.width='0%'; } });
+    var activeFill=dots[idx].querySelector('.bb-dot-fill');
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        if(activeFill){ activeFill.style.transition='width '+DURATION+'ms linear'; activeFill.style.width='100%'; }
+      });
+    });
+  }
+  function restart(){ clearInterval(timer); timer=setInterval(next,DURATION); restartFill(); }
+  stage.addEventListener('mouseenter',function(){ clearInterval(timer); });
+  stage.addEventListener('mouseleave',restart);
+  restart();
 }
 function viewHome(){
   topbar.classList.add('on-dark');

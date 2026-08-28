@@ -493,19 +493,29 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
   object-fit: contain;
 }
 .brand-banners{position:relative;background:var(--ink);overflow:hidden}
-.bb-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.bb-track::-webkit-scrollbar{display:none}
-.bb-slide{flex:0 0 100%;scroll-snap-align:start;display:block;line-height:0}
-.bb-slide img{width:100%;height:auto;display:block}
+.bb-stage{position:relative;aspect-ratio:1440/480;width:100%;overflow:hidden}
+.bb-slide{position:absolute;inset:0;display:block;line-height:0;opacity:0;
+  transform:scale(1.04);transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform 1.1s cubic-bezier(.22,.61,.36,1);
+  pointer-events:none;z-index:1}
+.bb-slide.on{opacity:1;transform:scale(1);pointer-events:auto;z-index:2}
+.bb-slide.out-left{opacity:0;transform:scale(1) translateX(-2%)}
+.bb-slide.out-right{opacity:0;transform:scale(1) translateX(2%)}
+.bb-slide img{width:100%;height:100%;object-fit:cover;display:block}
+
 .bb-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
-  background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;z-index:2;transition:.2s;backdrop-filter:blur(6px)}
+  background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;z-index:3;
+  transition:background .2s,opacity .2s;backdrop-filter:blur(6px);opacity:0}
+.brand-banners:hover .bb-nav{opacity:1}
 .bb-nav:hover{background:rgba(255,255,255,.3)}
 .bb-nav.prev{left:16px}.bb-nav.next{right:16px}
-.bb-dots{position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center;gap:7px;z-index:2}
-.bb-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:.2s}
-.bb-dot.on{background:#fff;width:20px;border-radius:5px}
+
+.bb-dots{position:absolute;left:0;right:0;bottom:18px;display:flex;justify-content:center;gap:8px;z-index:3}
+.bb-dot{position:relative;width:34px;height:4px;border-radius:3px;background:rgba(255,255,255,.28);overflow:hidden}
+.bb-dot-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:#fff;border-radius:3px}
+
 @media(max-width:640px){
-  .bb-nav{width:36px;height:36px}
+  .bb-nav{display:none}
+  .bb-dot{width:22px}
 }
 
 .dose-links{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
