@@ -493,7 +493,7 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
   object-fit: contain;
 }
 .brand-banners{position:relative;overflow:hidden;background:var(--ink)}
-.bb-stage{position:relative;height:52vh;min-height:320px;max-height:520px;width:100%;overflow:hidden;cursor:grab;touch-action:pan-y}
+.bb-stage{position:relative;height:64vh;min-height:420px;max-height:720px;width:100%;overflow:hidden;cursor:grab;touch-action:pan-y}
 .bb-stage:active{cursor:grabbing}
 .brand-banners::before,.brand-banners::after{
   content:"";position:absolute;left:0;right:0;height:90px;z-index:2;pointer-events:none;
@@ -521,7 +521,7 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 .bb-dot-fill{position:absolute;left:0;top:0;bottom:0;width:0%;background:#fff;border-radius:3px}
 
 @media(max-width:640px){
-  .bb-stage{height:38vh;min-height:220px}
+  .bb-stage{height:46vh;min-height:280px;max-height:440px}
   .brand-banners::before,.brand-banners::after{height:50px}
   .bb-nav{display:none}
   .bb-dot{width:22px}
