@@ -392,6 +392,25 @@ function wireBrandBanners(){
   function restart(){ clearInterval(timer); timer=setInterval(next,DURATION); restartFill(); }
   stage.addEventListener('mouseenter',function(){ clearInterval(timer); });
   stage.addEventListener('mouseleave',restart);
+  var stageEl=document.getElementById('bbStage');
+  var startX=0, deltaX=0, dragging=false;
+  function onDown(x){ dragging=true; startX=x; deltaX=0; clearInterval(timer); }
+  function onMove(x){ if(!dragging) return; deltaX=x-startX; }
+  function onUp(){
+    if(!dragging) return; dragging=false;
+    if(Math.abs(deltaX)>50){ deltaX<0?go(idx+1):go(idx-1); }
+    deltaX=0; restart();
+  }
+  stageEl.addEventListener('mousedown',function(e){ onDown(e.clientX); e.preventDefault(); });
+  window.addEventListener('mousemove',function(e){ onMove(e.clientX); });
+  window.addEventListener('mouseup',onUp);
+  stageEl.addEventListener('touchstart',function(e){ onDown(e.touches[0].clientX); },{passive:true});
+  stageEl.addEventListener('touchmove',function(e){ onMove(e.touches[0].clientX); },{passive:true});
+  stageEl.addEventListener('touchend',onUp);
+  stageEl.querySelectorAll('.bb-slide').forEach(function(s){
+    s.addEventListener('click',function(e){ if(Math.abs(deltaX)>10) e.preventDefault(); });
+  });
+
   restart();
 }
 function viewHome(){
