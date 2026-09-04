@@ -122,23 +122,28 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 .mini b{font-size:12px;font-weight:500;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mini span{font-size:10.5px;color:var(--faint)}
 
-/* ---------- ticker ribbon (brand tape) ---------- */
+/* ---------- ticker ribbon (hazard-tape brand strip) ---------- */
 .ribbon{
   position:relative;
-  background:
-    repeating-linear-gradient(135deg, rgba(23,17,10,.16) 0 3px, transparent 3px 25px),
-    linear-gradient(100deg,#FFC72C,#FFDA6B);
+  background:#FFDE00;
   color:#171310;
-  padding:26px 0;
+  padding:22px 0;
   overflow:hidden;
   transform:rotate(-1.4deg);
   margin:64px 0;
-  box-shadow:0 20px 40px -22px rgba(23,17,10,.55);
-  clip-path:polygon(0% 0%,4.167% 22%,8.333% 0%,12.5% 22%,16.667% 0%,20.833% 22%,25% 0%,29.167% 22%,33.333% 0%,37.5% 22%,41.667% 0%,45.833% 22%,50% 0%,54.167% 22%,58.333% 0%,62.5% 22%,66.667% 0%,70.833% 22%,75% 0%,79.167% 22%,83.333% 0%,87.5% 22%,91.667% 0%,95.833% 22%,100% 0%,100% 100%,95.833% 78%,91.667% 100%,87.5% 78%,83.333% 100%,79.167% 78%,75% 100%,70.833% 78%,66.667% 100%,62.5% 78%,58.333% 100%,54.167% 78%,50% 100%,45.833% 78%,41.667% 100%,37.5% 78%,33.333% 100%,29.167% 78%,25% 100%,20.833% 78%,16.667% 100%,12.5% 78%,8.333% 100%,4.167% 78%,0% 100%);
+  box-shadow:0 20px 40px -22px rgba(23,17,10,.5);
 }
-.ribbon .rt{display:flex;gap:30px;width:max-content;animation:slide 42s linear infinite;align-items:center;padding:11px 0}
-.ribbon span{font-family:"Onest",sans-serif;font-size:14.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;color:#171310}
-.ribbon i{color:rgba(23,17,10,.5);font-size:7px}
+.ribbon::before,.ribbon::after{
+  content:"";
+  position:absolute; left:0; right:0; height:0;
+  border-top:3px dashed rgba(23,17,10,.85);
+  pointer-events:none;
+}
+.ribbon::before{ top:7px }
+.ribbon::after{ bottom:7px }
+.ribbon .rt{display:flex;gap:26px;width:max-content;animation:slide 42s linear infinite;align-items:center;padding:5px 0}
+.ribbon span{font-family:"Onest",sans-serif;font-size:15px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap;color:#171310}
+.ribbon i{color:#171310;font-size:8px;opacity:.72}
 
 /* ---------- brand spotlight ---------- */
 .brand-spot{padding:0 0 8px}

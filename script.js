@@ -437,16 +437,14 @@ function viewHome(){
   }
   var a=SHELF_A.map(mini).join(''), b=SHELF_B.map(mini).join('');
   var bc={}; P.forEach(function(p){ bc[p.brand]=(bc[p.brand]||0)+1; });
-  var ribbonBrands=BRANDS.slice();
-  if(ribbonBrands.indexOf('Carlson')===-1) ribbonBrands.push('Carlson');
-  var ribbon=ribbonBrands.concat(ribbonBrands).map(function(x){
+  var ribbon=BRANDS.concat(BRANDS).map(function(x){
     return '<span>'+esc(x)+'</span><i class="ti ti-circle-filled" aria-hidden="true"></i>';
   }).join('');
   var BRAND_SPOT=[
     {name:'California Gold Nutrition', icon:'ti-leaf', accent:'#2C7D6C'},
     {name:'NaturesPlus', icon:'ti-apple', accent:'#B26079'},
     {name:"Nature's Answer", icon:'ti-plant-2', accent:'#6C8A3C'},
-    {name:'Carlson', icon:'ti-fish', accent:'#5F7386', soon:true}
+    {name:'Carlson', icon:'ti-fish', accent:'#5F7386'}
   ];
   var bspot=BRAND_SPOT.map(function(b){
     var tag=b.soon?'span':'a';
