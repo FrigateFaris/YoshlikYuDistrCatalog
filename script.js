@@ -38,7 +38,7 @@ ru:{
  s1h:'Разговор в аптеке', s1p:'Медицинский представитель рассказывает фармацевту о продукте.',
  s2h:'Один QR-код', s2p:'Фармацевт наводит камеру и получает страницу товара себе в телефон.',
  s3h:'Справочник под рукой', s3p:'Состав и дозировка остаются доступными в тот момент, когда нужны.',
- sec_port:'Портфель', sec_brands:'Бренды',
+ sec_port:'Портфель', sec_brands:'Бренды', sec_brands_p:'Продукция американских производителей', bspot_soon:'Скоро в каталоге',
  cta_h:'Готовы посмотреть ассортимент?',
  cta_p:'Полный каталог с поиском по названию, бренду и действующему веществу.',
  cta_btn:'Открыть каталог',
@@ -80,7 +80,7 @@ uz:{
  s1h:'Dorixonadagi suhbat', s1p:'Tibbiy vakil farmatsevtga mahsulot haqida soʻzlab beradi.',
  s2h:'Bitta QR-kod', s2p:'Farmatsevt kamerani qaratadi va mahsulot sahifasini telefoniga oladi.',
  s3h:'Qoʻl ostidagi maʼlumotnoma', s3p:'Tarkib va doza kerak boʻlgan paytda ochiq turadi.',
- sec_port:'Portfel', sec_brands:'Brendlar', sec_brands_p:'AQSH ishlab chiqaruvchilari mahsulotlari',
+ sec_port:'Portfel', sec_brands:'Brendlar', sec_brands_p:'AQSH ishlab chiqaruvchilari mahsulotlari', bspot_soon:'Tez orada',
  cta_h:'Assortiment bilan tanishasizmi?',
  cta_p:'Nomi, brendi va taʼsir etuvchi moddasi boʻyicha qidiruvli toʻliq katalog.',
  cta_btn:'Katalogni ochish',
@@ -437,8 +437,26 @@ function viewHome(){
   }
   var a=SHELF_A.map(mini).join(''), b=SHELF_B.map(mini).join('');
   var bc={}; P.forEach(function(p){ bc[p.brand]=(bc[p.brand]||0)+1; });
-  var ribbon=BRANDS.concat(BRANDS).map(function(x){
+  var ribbonBrands=BRANDS.slice();
+  if(ribbonBrands.indexOf('Carlson')===-1) ribbonBrands.push('Carlson');
+  var ribbon=ribbonBrands.concat(ribbonBrands).map(function(x){
     return '<span>'+esc(x)+'</span><i class="ti ti-circle-filled" aria-hidden="true"></i>';
+  }).join('');
+  var BRAND_SPOT=[
+    {name:'California Gold Nutrition', icon:'ti-leaf', accent:'#2C7D6C'},
+    {name:'NaturesPlus', icon:'ti-apple', accent:'#B26079'},
+    {name:"Nature's Answer", icon:'ti-plant-2', accent:'#6C8A3C'},
+    {name:'Carlson', icon:'ti-fish', accent:'#5F7386', soon:true}
+  ];
+  var bspot=BRAND_SPOT.map(function(b){
+    var tag=b.soon?'span':'a';
+    var href=b.soon?'':' href="'+L('#/catalog?q='+encodeURIComponent(b.name))+'"';
+    var meta=b.soon
+      ? '<span class="bspot-new"><i class="ti ti-sparkles" aria-hidden="true"></i>'+esc(t('bspot_soon'))+'</span>'
+      : '<span>'+esc(nProducts(bc[b.name]||0))+'</span>';
+    return '<'+tag+' class="bspot-card'+(b.soon?' soon':'')+'"'+href+'>'
+      + '<span class="bspot-ic" style="background:'+rgba(b.accent,.14)+';color:'+b.accent+'"><i class="ti '+b.icon+'" aria-hidden="true"></i></span>'
+      + '<span class="bspot-txt"><b>'+esc(b.name)+'</b>'+meta+'</span></'+tag+'>';
   }).join('');
   var tips=t('tips').map(function(s){
     return '<button data-s="'+esc(s)+'">'+esc(s)+'</button>'; }).join('');
@@ -467,6 +485,11 @@ function viewHome(){
     + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_parts'))+'</span>'
     + '<h2>'+esc(t('sec_parts_h'))+'</h2><p>'+esc(t('sec_parts_p'))+'</p></div>'
     + '<div class="cat-grid">'+tiles+'</div></div></section>'
+
+    + '<section class="brand-spot"><div class="shell sec">'
+    + '<div class="sec-head rv"><span class="tagline-lbl">'+esc(t('sec_port'))+'</span>'
+    + '<h2>'+esc(t('sec_brands'))+'</h2><p>'+esc(t('sec_brands_p'))+'</p></div>'
+    + '<div class="bspot-grid">'+bspot+'</div></div></section>'
 
     + '<div class="ribbon" aria-hidden="true"><div class="rt">'+ribbon+'</div></div>'
 
