@@ -74,8 +74,8 @@ mark{background:var(--terra-tint);color:var(--terra-deep);border-radius:3px;padd
 .rings circle:nth-child(3){stroke-dasharray:1 22;stroke:rgba(232,168,124,.34);animation:spin 62s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hero-in{position:relative;max-width:720px}
-.eyebrow{display:inline-flex;align-items:center;gap:11px;font-size:19px;letter-spacing:.16em;text-transform:uppercase;color:var(--terra-warm);margin-bottom:26px;font-weight:600}
-.eyebrow::before{content:"";width:26px;height:1px;background:var(--terra)}
+.eyebrow{display:inline-flex;align-items:center;gap:13px;font-size:26px;letter-spacing:.14em;text-transform:uppercase;color:var(--terra-warm);margin-bottom:28px;font-weight:600}
+.eyebrow::before{content:"";width:34px;height:2px;background:var(--terra)}
 .hero h1{font-size:clamp(34px,6.4vw,66px);color:#fff;font-weight:700;margin-bottom:22px;letter-spacing:-.035em}
 .hero h1 .ln{display:block;overflow:hidden}
 .hero h1 .ln>span{display:block;transform:translateY(110%);animation:rise .95s var(--e) forwards}
