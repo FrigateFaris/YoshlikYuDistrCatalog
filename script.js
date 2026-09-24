@@ -346,7 +346,8 @@ function buildBrandBanners(){
     {file:'life-extension',brand:'Life Extension'},
     {file:'solaray',brand:'Solaray'},
     {file:'vita-garden',brand:'Vita Garden'},
-    {file:'carlson',brand:'Carlson'}
+    {file:'carlson',brand:'Carlson'},
+    {file:'solgar',brand:'Solgar'}
   ];
   var slides=banners.map(function(b,i){
     return '<a class="bb-slide'+(i===0?' on':'')+'" href="'+L('#/catalog?q='+encodeURIComponent(b.brand))+'">'
